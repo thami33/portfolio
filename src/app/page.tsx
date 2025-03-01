@@ -2,781 +2,788 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import {
   CodeBracketIcon,
-  RocketLaunchIcon,
+  BeakerIcon,
   CpuChipIcon,
-  BookOpenIcon,
+  CommandLineIcon,
   EnvelopeIcon,
   PhoneIcon,
   MapPinIcon,
+  ArrowRightIcon,
 } from '@heroicons/react/24/outline'
-import PricingCard from './components/PricingCard'
-import FaqItem from './components/FaqItem'
-import TestimonialCard from './components/TestimonialCard'
-import FeatureCard from './components/FeatureCard'
+import { RainbowButton } from "@/components/ui/rainbow-button"
+import { Squares } from "@/components/ui/squares-background"
+import { NavMenu } from "@/components/ui/nav-menu"
+import { GradientCard } from "@/components/ui/gradient-card"
+import { FloatingSphere } from "@/components/ui/floating-sphere"
+import { ParticleField } from "@/components/ui/particle-field"
+import { ScrollProgress } from "@/components/ui/scroll-progress"
+import { SparklesCore } from "@/components/ui/sparkles"
+import { Gravity, MatterBody } from "@/components/ui/gravity"
+import { HeroGeometric } from "@/components/ui/shape-landing-hero"
+import { ProjectModal } from "@/components/ui/project-modal"
+import { SnakeGame } from "@/components/ui/snake-game"
+import { useState } from 'react'
 
-const features = [
+const skills = [
   {
-    icon: <CodeBracketIcon className="w-6 h-6" />,
-    title: 'Production-Ready Code',
-    description: 'Get started with professionally written, well-structured code that scales.',
+    icon: <CpuChipIcon className="w-6 h-6" />,
+    title: 'AI Systems Development',
+    description: 'Expertise in developing advanced AI solutions using cutting-edge LLMs, neural networks, and machine learning algorithms. Specialized in GPT integration and custom AI model development.',
   },
   {
-    icon: <RocketLaunchIcon className="w-6 h-6" />,
-    title: 'Quick Deployment',
-    description: 'Deploy your application with one click to your favorite cloud platform.',
+    icon: <BeakerIcon className="w-6 h-6" />,
+    title: 'Machine Learning Systems',
+    description: 'Deep experience in ML model development, training, and deployment. Proficient in building predictive models, data analysis, and integrating ML capabilities into practical applications.',
+  },
+  {
+    icon: <CommandLineIcon className="w-6 h-6" />,
+    title: 'AI Web Development',
+    description: 'Building modern AI-powered web applications with Next.js, React, and TypeScript. Expert in creating responsive, performant UIs with seamless AI integration and intelligent features.',
+  },
+  {
+    icon: <CodeBracketIcon className="w-6 h-6" />,
+    title: 'App Development',
+    description: 'Creating cross-platform mobile applications with integrated AI capabilities. Experienced in developing intelligent mobile solutions that leverage machine learning and natural language processing.',
   },
   {
     icon: <CpuChipIcon className="w-6 h-6" />,
-    title: 'AI Integration',
-    description: 'Built-in AI capabilities to supercharge your application features.',
+    title: 'Automations',
+    description: 'Designing and implementing intelligent automation systems that streamline workflows and business processes. Expertise in creating custom solutions that save time and increase efficiency.',
+  },
+  {
+    icon: <BeakerIcon className="w-6 h-6" />,
+    title: 'WordPress Plugin Development',
+    description: 'Developing custom WordPress plugins that extend functionality and integrate AI capabilities. Experience creating tailored solutions for content management, e-commerce, and business operations.',
   },
 ]
 
-const pricingPlans = [
+const projects = [
   {
-    title: 'Starter',
-    price: '99',
-    description: 'Perfect for side projects and small startups',
+    title: 'AI Portfolio Website',
+    description: 'A Next.js portfolio website with AI-powered features and modern design.',
+    longDescription: 'A modern, interactive portfolio website built with Next.js and TypeScript. Features include AI-powered components, interactive animations, particle effects, and an engaging Snake game with power-ups and fun facts.',
+    tech: ['Next.js 15', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Matter.js', 'Heroicons', 'tsParticles'],
+    link: '#',
+    image: '/portfolio-hero.png',
     features: [
-      'Up to 5 team members',
-      'Basic analytics',
-      'Community support',
-      '5GB storage',
-      'API access',
+      'Interactive Snake game with power-ups and fun facts',
+      'Smooth animations and transitions using Framer Motion',
+      'Physics-based floating elements with Matter.js',
+      'Dynamic particle effects and sparkle backgrounds',
+      'Responsive design with mobile-friendly controls',
+      'Modern glassmorphism UI with gradient effects',
+      'Optimized performance with Next.js'
     ],
-    buttonText: 'Get Started',
-    priceId: 'price_1QTPalGI6vk81n8V8PtyW1ow'
+    challenges: [
+      'Implementing complex game logic with power-ups and mobile controls',
+      'Creating smooth physics-based animations',
+      'Optimizing particle effects for performance',
+      'Building responsive layouts with modern UI effects',
+      'Ensuring cross-device compatibility'
+    ],
+    githubUrl: 'https://github.com/thami33/portfolio',
+    liveUrl: 'https://your-portfolio-url.com'
   },
   {
-    title: 'Pro',
-    price: '249',
-    description: 'Best for growing businesses',
+    title: 'RE5 Master Mobile App',
+    description: 'A comprehensive mobile learning platform for financial services professionals preparing for the FSCA\'s RE5 regulatory examination in South Africa.',
+    longDescription: 'RE5 Master is a comprehensive mobile learning platform designed specifically for financial services professionals preparing for the FSCA\'s RE5 regulatory examination in South Africa. The app provides a structured learning experience with practice questions, mock exams, and study materials that align with official FSCA documentation and current regulations.',
+    tech: ['React Native', 'Expo', 'TypeScript', 'Firebase', 'PayFast', 'OpenAI API', 'Expo Router', 'React Context', 'Styled Components'],
+    link: 'https://youtu.be/Oxh2jgtkras',
+    image: '/re5-master-preview.png',
     features: [
-      'Unlimited team members',
-      'Advanced analytics',
-      'Priority support',
-      '50GB storage',
-      'API access',
-      'Custom integrations',
+      'Practice Question Bank: Extensive collection of practice questions organized by topic',
+      'Mock Exams: Multiple full-length simulated exams with timing and scoring',
+      'Learning Materials: Comprehensive study guides and flashcards',
+      'Progress Tracking: Detailed statistics and performance analytics',
+      'Premium Subscription: Enhanced access to additional mock exams and features',
+      'Secure Payment Processing: Integration with PayFast for South African payments',
+      'User Authentication: Secure account management and progress saving',
+      'Responsive Design: Optimized for both iOS and Android devices',
+      'Offline Access: Study materials available without internet connection',
+      'AI-Powered Assistance: OpenAI integration for answering regulatory questions'
     ],
-    buttonText: 'Start Free Trial',
-    popular: true,
-    priceId: 'price_1QTPbgGI6vk81n8VgYFOi983'
+    challenges: [
+      'Implementing secure payment processing with PayFast',
+      'Creating an efficient question bank system with proper categorization',
+      'Building a reliable mock exam engine with timing and scoring',
+      'Optimizing app performance with large question datasets',
+      'Ensuring content accuracy and compliance with FSCA regulations',
+      'Managing user subscription states and access control',
+      'Implementing responsive UI across various device sizes',
+      'Synchronizing offline and online data for seamless user experience',
+      'Integrating OpenAI API for regulatory assistance features'
+    ],
+    videoUrl: 'https://youtu.be/Oxh2jgtkras'
   },
   {
-    title: 'Enterprise',
-    price: '999',
-    description: 'For large scale applications',
+    title: 'CareerDash',
+    description: 'A comprehensive career development platform with AI-powered tools for job seekers.',
+    longDescription: 'CareerDash is a comprehensive career development platform built with Next.js and Firebase, designed to help job seekers enhance their CVs, prepare for interviews, and improve their job search process. The platform leverages AI-powered tools to provide personalized career guidance, CV enhancement, and interview preparation.',
+    tech: ['Next.js', 'TypeScript', 'Firebase', 'Tailwind CSS', 'Deepseek AI', 'PDF.js', 'Formidable', 'PayPal', 'Webpack'],
+    link: 'https://youtu.be/rU24vpS9n0w',
+    image: '/careerdash-preview.png',
     features: [
-      'Unlimited everything',
-      'White-label options',
-      '24/7 phone support',
-      '500GB storage',
-      'API access',
-      'Custom development',
+      'AI-powered CV parsing, analysis, and enhancement',
+      'Automated skill extraction and categorization',
+      'ATS compatibility analysis',
+      'Cover letter generation tailored to job descriptions',
+      'AI-generated interview questions and mock interview practice',
+      'Real-time interview response analysis and feedback',
+      'Job application tracking and CV tailoring',
+      'Skills gap analysis and career progression recommendations',
+      'Subscription management with PayPal integration'
     ],
-    buttonText: 'Contact Sales',
-    priceId: 'price_1QTPcUGI6vk81n8V9567pzL9'
+    challenges: [
+      'Implementing accurate CV parsing from various document formats',
+      'Creating reliable AI-powered CV enhancement that maintains factual accuracy',
+      'Building a responsive and intuitive user interface for complex workflows',
+      'Optimizing API calls to Deepseek for cost-efficiency',
+      'Ensuring data security and privacy for sensitive user information',
+      'Handling audio processing for interview practice sessions',
+      'Creating a scalable subscription management system'
+    ],
+    videoUrl: 'https://youtu.be/rU24vpS9n0w'
   },
+  {
+    title: 'MyShopa E-commerce Platform',
+    description: 'A full-featured e-commerce platform built with WordPress and modern technologies.',
+    longDescription: 'MyShopa.co.za is a comprehensive e-commerce solution built on WordPress and WooCommerce, providing a seamless shopping experience for South African customers. The platform features a custom-designed interface using Elementor Pro and integrates with PayFast for secure local payments.',
+    tech: ['WordPress', 'WooCommerce', 'Elementor Pro', 'PayFast', 'PHP', 'MySQL', 'Custom Plugins'],
+    link: 'https://myshopa.co.za',
+    image: '/myshopa-preview.png',
+    features: [
+      'Custom WordPress theme with Elementor Pro design',
+      'WooCommerce integration with advanced product management',
+      'Secure payment processing with PayFast integration',
+      'Support for multiple South African payment methods',
+      'Custom product filtering and search functionality',
+      'Responsive mobile-first design',
+      'Optimized checkout process',
+      'Advanced inventory management system'
+    ],
+    challenges: [
+      'Implementing secure PayFast payment gateway integration',
+      'Creating custom WooCommerce extensions',
+      'Optimizing WordPress performance and load times',
+      'Building responsive Elementor templates',
+      'Ensuring seamless mobile experience',
+      'Implementing secure user authentication'
+    ],
+    liveUrl: 'https://myshopa.co.za'
+  },
+  // Add more projects as needed
 ]
 
-const faqs = [
-  {
-    question: 'What is included in the starter package?',
-    answer: 'The starter package includes all essential features to get your project up and running, including basic analytics, community support, and API access.',
-  },
-  {
-    question: 'Can I upgrade my plan later?',
-    answer: 'Yes, you can upgrade your plan at any time. Your new features will be available immediately after upgrading.',
-  },
-  {
-    question: 'Do you offer custom development?',
-    answer: 'Yes, our enterprise plan includes custom development options to meet your specific needs.',
-  },
-]
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 }
+}
 
-const testimonials = [
-  {
-    content: "This toolkit saved us months of development time. We launched our MVP in just 2 weeks!",
-    author: {
-      name: "Sarah Chen",
-      avatar: "/avatars/placeholder.svg",
-      title: "CTO at TechStart"
-    },
-    stats: [
-      { label: "Time Saved", value: "3 months" },
-      { label: "ROI", value: "300%" }
-    ]
-  },
-  {
-    content: "The code quality is exceptional. It's like having a senior developer on the team.",
-    author: {
-      name: "Mike Johnson",
-      avatar: "/avatars/placeholder.svg",
-      title: "Lead Developer"
-    }
-  },
-  {
-    content: "Best investment we made for our startup. The support is amazing too!",
-    author: {
-      name: "Lisa Park",
-      avatar: "/avatars/placeholder.svg",
-      title: "Founder at AppLabs"
+const stagger = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
     }
   }
-]
+}
 
 export default function Home() {
+  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
+  const { scrollYProgress } = useScroll()
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+
   return (
-    <div className="min-h-screen bg-[#0A0A0A]">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-[#0A0A0A]/80 backdrop-blur-sm border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link href="/" className="text-xl font-bold text-white">
-                Startup
-              </Link>
-            </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <Link href="/features" className="text-sm text-white/70 hover:text-white">
-                Features
-              </Link>
-              <Link href="/pricing" className="text-sm text-white/70 hover:text-white">
-                Pricing
-              </Link>
-              <Link href="/docs" className="text-sm text-white/70 hover:text-white flex items-center space-x-1">
-                <BookOpenIcon className="w-4 h-4" />
-                <span>Docs</span>
-              </Link>
-              <Link 
-                href="https://github.com/zainulabedeen123/best-saas-kit/discussions" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-sm text-white/70 hover:text-white"
-              >
-                Community
-              </Link>
-              <Link href="/blog" className="text-sm text-white/70 hover:text-white">
-                Blog
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link 
-                href="https://github.com/zainulabedeen123/best-saas-kit"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-white/70 hover:text-white flex items-center space-x-1"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z" />
-                </svg>
-              </Link>
-              <Link 
-                href="/auth" 
-                className="text-sm text-white/70 hover:text-white"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/auth?view=sign-up"
-                className="bg-[#FFBE1A] text-black text-sm px-4 py-2 rounded-lg hover:bg-[#FFBE1A]/90"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
+    <div className="min-h-screen bg-black text-white selection:bg-indigo-500/90 selection:text-white">
+      <ScrollProgress />
+      <NavMenu />
+      
+      {/* Background Effects */}
+      <ParticleField />
+      <div className="fixed inset-0 -z-20 h-full w-full bg-black">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent" />
         </div>
-      </nav>
+
+      {/* Scroll Down Arrow - Repositioned to bottom left */}
+      <motion.div 
+        className="fixed left-8 bottom-8 w-fit z-30 cursor-pointer flex items-center gap-3 bg-black/20 backdrop-blur-sm px-4 py-3 rounded-full ring-1 ring-white/10 hover:ring-white/20 transition-all"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ 
+          y: 0,
+          opacity: 1 
+        }}
+        transition={{ 
+          y: {
+            duration: 0.5,
+            ease: "easeOut"
+          },
+          opacity: {
+            duration: 0.5
+          }
+        }}
+        onClick={() => {
+          const sections = ['about', 'skills', 'tetris', 'portfolio', 'contact'];
+          const currentScroll = window.scrollY + window.innerHeight / 2;
+          
+          // Get all section positions
+          const sectionPositions = sections.map(id => {
+            const element = document.getElementById(id);
+            if (!element) return null;
+            return {
+              id,
+              position: element.getBoundingClientRect().top + window.scrollY
+            };
+          }).filter((section): section is { id: string; position: number } => section !== null);
+          
+          // Find the next section
+          const nextSection = sectionPositions.find(section => section.position > currentScroll)?.id || sections[0];
+          
+          // Scroll to it
+          document.getElementById(nextSection)?.scrollIntoView({ behavior: 'smooth' });
+        }}
+      >
+        <div className="p-2 rounded-full bg-gradient-to-r from-indigo-500/20 to-cyan-500/20 backdrop-blur-sm ring-1 ring-white/20 transition-all hover:from-indigo-500/30 hover:to-cyan-500/30 hover:ring-white/30">
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="h-5 w-5 text-white/40 transition-colors hover:text-white/90" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M19 14l-7 7m0 0l-7-7m7 7V3" 
+            />
+          </svg>
+        </div>
+        <span className="text-white/40 text-sm font-medium transition-colors hover:text-white/90">Explore sections</span>
+      </motion.div>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 mb-6">
-                <span className="mr-2">⚡</span> Ship faster with our SaaS Kit
-              </div>
-              <h1 className="text-5xl sm:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-6">
-                Ship your startup<br />in days, not weeks
-              </h1>
-              <p className="text-lg text-white/70 mb-8 leading-relaxed">
-                The fastest way to build and deploy your startup with production-ready code
-              </p>
-              <div className="flex items-center space-x-4 mb-8">
-                <div className="flex items-center bg-white/5 px-3 py-1 rounded-full">
-                  <div className="flex">
-                    {'★★★★★'.split('').map((star, i) => (
-                      <span key={i} className="text-[#FFBE1A]">
-                        {star}
-                      </span>
-                    ))}
+      <div className="relative min-h-screen">
+        <HeroGeometric 
+          badge="AI Developer"
+          title1="Thami Mvelase"
+          title2="AI & Full Stack Developer"
+        />
+        
+        {/* Gravity Demo */}
+        <div className="absolute inset-0 z-20">
+          <div className="absolute inset-0" style={{ pointerEvents: 'none' }}>
+            <div style={{ pointerEvents: 'auto' }}>
+              <Gravity className="w-full h-full" gravity={{ x: 0, y: 1 }}>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="30%"
+                  y="10%"
+                >
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-full px-8 py-4">
+                    AI
                   </div>
-                  <span className="ml-2 text-[#FFBE1A] font-medium">4.9/5</span>
-                  <span className="mx-2 text-white/30">•</span>
-                  <span className="text-white/70">from 1000+ reviews</span>
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  href="/auth?view=sign-up"
-                  className="inline-flex justify-center items-center px-6 py-3 rounded-lg bg-[#FFBE1A] text-black font-medium hover:bg-[#FFBE1A]/90 transition-colors"
+                </MatterBody>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="40%"
+                  y="15%"
                 >
-                  Get Started
-                </Link>
-                <Link
-                  href="https://github.com/zainulabedeen123/best-saas-kit"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex justify-center items-center px-6 py-3 rounded-lg border border-white/10 text-white font-medium hover:bg-white/5 transition-colors"
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-full px-8 py-4">
+                    ML
+                </div>
+                </MatterBody>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="50%"
+                  y="20%"
                 >
-                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z" />
-                  </svg>
-                  Github Repo
-                </Link>
-              </div>
-            </div>
-            <div className="relative h-[400px] lg:h-[500px]">
-              <Image
-                src="/Saas-Header.png"
-                alt="SaaS Platform Preview"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="space-y-16">
-            {/* Launch Time */}
-            <div className="text-[#4ADE80] text-sm font-mono">
-              const launch_time = "01:19 AM";
-            </div>
-
-            {/* Heading */}
-            <div>
-              <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-white/90 to-white/60 bg-clip-text text-transparent">
-                Supercharge your app instantly,<br />
-                launch faster, make $
-              </h2>
-              <p className="text-lg text-white/60 max-w-3xl">
-                Login users, process payments and send emails at lightspeed. Spend your time building 
-                your startup, not integrating APIs. ShipFast provides you with the boilerplate code you 
-                need to launch, FAST.
-              </p>
-            </div>
-
-            {/* Feature Icons */}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8">
-              <div className="flex flex-col items-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
-                  <span className="text-2xl">@</span>
-                </div>
-                <span className="text-white/60 text-sm">Emails</span>
-              </div>
-              <div className="flex flex-col items-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
-                  <span className="text-2xl">💳</span>
-                </div>
-                <span className="text-white/60 text-sm">Payments</span>
-              </div>
-              <div className="flex flex-col items-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
-                  <span className="text-2xl">👤</span>
-                </div>
-                <span className="text-white/60 text-sm">Login</span>
-              </div>
-              <div className="flex flex-col items-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
-                  <span className="text-2xl">🗄️</span>
-                </div>
-                <span className="text-white/60 text-sm">Database</span>
-              </div>
-              <div className="flex flex-col items-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
-                  <span className="text-2xl">📄</span>
-                </div>
-                <span className="text-white/60 text-sm">SEO</span>
-              </div>
-              <div className="flex flex-col items-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
-                  <span className="text-2xl">🎨</span>
-                </div>
-                <span className="text-white/60 text-sm">Style</span>
-              </div>
-              <div className="flex flex-col items-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
-                  <span className="text-2xl">⋯</span>
-                </div>
-                <span className="text-[#FFBE1A] text-sm">More</span>
-              </div>
-            </div>
-
-            {/* Feature List */}
-            <div className="space-y-4 text-lg">
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6 text-[#4ADE80]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-white/80">Tips to write copy that sells</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6 text-[#4ADE80]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-white/80">Discord community to stay accountable</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6 text-[#4ADE80]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-white/80">
-                  <span className="text-[#FFBE1A]">Crisp</span> customer support (auto show/hide, variables...)
-                </span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6 text-[#4ADE80]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-white/80">Collect emails for a waitlist if your product isn't ready</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6 text-[#4ADE80]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-white/80">Prompts to generate terms & privacy policy with ChatGPT</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6 text-[#4ADE80]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-white/80">Copy paste code templates</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6 text-[#4ADE80]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-white/80">Dead simple tutorials</span>
-              </div>
-            </div>
-
-            {/* Time Saved */}
-            <div className="text-[#4ADE80] text-lg">
-              Time saved: ∞ hours
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-violet-500 to-purple-500 text-white rounded-full px-8 py-4">
+                    Next.js
+                  </div>
+                </MatterBody>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="60%"
+                  y="25%"
+                >
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-full px-8 py-4">
+                    React
+                  </div>
+                </MatterBody>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="70%"
+                  y="30%"
+                >
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full px-8 py-4">
+                    Python
+                  </div>
+                </MatterBody>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="35%"
+                  y="35%"
+                >
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-full px-8 py-4">
+                    TypeScript
+                  </div>
+                </MatterBody>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="45%"
+                  y="40%"
+                >
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-full px-8 py-4">
+                    Tailwind
+                  </div>
+                </MatterBody>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="55%"
+                  y="45%"
+                >
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-rose-500 to-red-500 text-white rounded-full px-8 py-4">
+                    Android
+                  </div>
+                </MatterBody>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="65%"
+                  y="50%"
+                >
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full px-8 py-4">
+                    iOS
+                  </div>
+                </MatterBody>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="75%"
+                  y="55%"
+                >
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-teal-500 to-cyan-500 text-white rounded-full px-8 py-4">
+                    React Native
+                  </div>
+                </MatterBody>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="40%"
+                  y="60%"
+                >
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full px-8 py-4">
+                    Cursor AI
+                  </div>
+                </MatterBody>
+                <MatterBody
+                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                  x="50%"
+                  y="65%"
+                >
+                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-full px-8 py-4">
+                    JavaScript
+                  </div>
+                </MatterBody>
+              </Gravity>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Time Breakdown Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-[#1A1311] rounded-3xl p-10 text-center">
-            <div className="space-y-3">
-              <div className="text-[#FF6B6B] font-medium">4 hrs <span className="text-white/60">to set up emails</span></div>
-              <div><span className="text-[#FF6B6B] font-medium">+ 6 hrs</span> <span className="text-white/60">designing a landing page</span></div>
-              <div><span className="text-[#FF6B6B] font-medium">+ 4 hrs</span> <span className="text-white/60">to handle Stripe webhooks</span></div>
-              <div><span className="text-[#FF6B6B] font-medium">+ 2 hrs</span> <span className="text-white/60">for SEO tags</span></div>
-              <div><span className="text-[#FF6B6B] font-medium">+ 1 hr</span> <span className="text-white/60">applying for Google Oauth</span></div>
-              <div><span className="text-[#FF6B6B] font-medium">+ 3 hrs</span> <span className="text-white/60">for DNS records</span></div>
-              <div><span className="text-[#FF6B6B] font-medium">+ 2 hrs</span> <span className="text-white/60">for protected API routes</span></div>
-              <div><span className="text-[#FF6B6B] font-medium">+ ∞ hrs</span> <span className="text-white/60">overthinking...</span></div>
-              <div className="pt-3 flex items-center justify-center gap-2">
-                <span className="text-[#FF6B6B] font-medium">= 22+ hours</span>
-                <span className="text-white/60">of headaches</span>
-                <span className="text-2xl">🌧️</span>
-              </div>
-            </div>
-          </div>
-          <div className="text-center mt-8">
-            <div className="inline-flex items-center text-white/60 gap-2">
-              <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-              There's an easier way
-            </div>
-          </div>
+      {/* About Me Section */}
+      <section id="about" className="py-24 relative">
+        {/* Background Sparkles */}
+        <div className="absolute inset-0">
+          <SparklesCore
+            background="transparent"
+            minSize={0.4}
+            maxSize={1}
+            particleDensity={40}
+            className="w-full h-full"
+            particleColor="#FFFFFF"
+            speed={0.2}
+          />
         </div>
-      </section>
 
-      {/* Launch Announcement Video */}
-      <section className="py-20 px-4 bg-white/5">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-8">
-            Watch Our Launch Announcement
-          </h2>
-          <div className="aspect-video w-full">
-            <iframe
-              className="w-full h-full rounded-2xl shadow-2xl"
-              src="https://www.youtube.com/embed/JiXy9JGkGzo"
-              title="Best SAAS Kit Pro Launch Announcement"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-white text-center mb-12">
-            Save hours of repetitive code,<br />ship fast, get profitable
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {pricingPlans.map((plan, index) => (
-              <PricingCard key={index} {...plan} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Form Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Get in Touch
-            </h2>
-            <p className="text-lg text-white/60 max-w-2xl mx-auto">
-              Have questions about our product? Need help getting started? We're here to help.
+        <div className="px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
+          <motion.div 
+            className="mx-auto max-w-2xl lg:text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-base font-semibold leading-7 text-indigo-400">About Me</h2>
+            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+              Passionate AI Developer
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            {/* Contact Information */}
-            <div className="space-y-8">
-              <div>
-                <h3 className="text-xl font-semibold text-white mb-4">Contact Information</h3>
-                <p className="text-white/60 mb-6">
-                  Fill out the form and we'll get back to you within 24 hours.
+          <div className="mt-16 grid grid-cols-1 gap-12 lg:grid-cols-2 items-center">
+            {/* Left Column - Image */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="aspect-square w-full max-w-md mx-auto overflow-hidden rounded-2xl bg-gray-900/50 ring-1 ring-white/10 backdrop-blur-sm">
+                <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-pink-500/20 opacity-50" />
+                <Image
+                  src="/profile-image.jpg"
+                  alt="Thami Mvelase"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </motion.div>
+
+            {/* Right Column - Bio */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <div className="space-y-6 text-lg text-gray-300">
+                <p>
+                  I'm Thami Mvelase, an AI and Full Stack Developer based in Johannesburg, South Africa, with a passion for creating intelligent digital solutions that solve real-world problems.
+                </p>
+                <p>
+                  With a background in construction engineering before transitioning to tech, I bring a unique perspective to software development—combining analytical thinking with creative problem-solving.
+                </p>
+                <p>
+                  I specialize in developing AI-powered applications, from intelligent web platforms to mobile apps with integrated machine learning capabilities. My expertise spans across modern frameworks like Next.js, React Native, and various AI technologies.
+                </p>
+                <p>
+                  When I'm not coding, you'll find me exploring new AI advancements, teaching others about technology, or enjoying the vibrant culture of Johannesburg.
                 </p>
               </div>
 
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="p-3 bg-white/5 rounded-lg">
-                    <EnvelopeIcon className="w-6 h-6 text-[#FFBE1A]" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-medium mb-1">Email</h4>
-                    <a href="mailto:contact@example.com" className="text-white/60 hover:text-[#FFBE1A]">
-                      contact@example.com
-                    </a>
-                  </div>
+              {/* Key Facts */}
+              <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="rounded-xl bg-gray-900/30 p-5 ring-1 ring-white/10 backdrop-blur-sm">
+                  <h3 className="text-lg font-medium text-indigo-400 mb-2">Experience</h3>
+                  <p className="text-gray-300">5+ years in AI and full-stack development</p>
                 </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="p-3 bg-white/5 rounded-lg">
-                    <PhoneIcon className="w-6 h-6 text-[#FFBE1A]" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-medium mb-1">Phone</h4>
-                    <a href="tel:+1234567890" className="text-white/60 hover:text-[#FFBE1A]">
-                      +1 (234) 567-890
-                    </a>
-                  </div>
+                <div className="rounded-xl bg-gray-900/30 p-5 ring-1 ring-white/10 backdrop-blur-sm">
+                  <h3 className="text-lg font-medium text-indigo-400 mb-2">Education</h3>
+                  <p className="text-gray-300">BSc in Construction Engineering</p>
                 </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="p-3 bg-white/5 rounded-lg">
-                    <MapPinIcon className="w-6 h-6 text-[#FFBE1A]" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-medium mb-1">Office</h4>
-                    <p className="text-white/60">
-                      123 Innovation Street<br />
-                      San Francisco, CA 94107
-                    </p>
-                  </div>
+                <div className="rounded-xl bg-gray-900/30 p-5 ring-1 ring-white/10 backdrop-blur-sm">
+                  <h3 className="text-lg font-medium text-indigo-400 mb-2">Location</h3>
+                  <p className="text-gray-300">Johannesburg, South Africa</p>
+                </div>
+                <div className="rounded-xl bg-gray-900/30 p-5 ring-1 ring-white/10 backdrop-blur-sm">
+                  <h3 className="text-lg font-medium text-indigo-400 mb-2">Languages</h3>
+                  <p className="text-gray-300">English, Zulu</p>
                 </div>
               </div>
-
-              <div className="pt-8">
-                <h4 className="text-white font-medium mb-4">Follow Us</h4>
-                <div className="flex space-x-4">
-                  <a href="#" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                    <svg className="w-5 h-5 text-[#FFBE1A]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
-                  </a>
-                  <a href="#" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                    <svg className="w-5 h-5 text-[#FFBE1A]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                    </svg>
-                  </a>
-                  <a href="#" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                    <svg className="w-5 h-5 text-[#FFBE1A]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.223-.548.223l.188-2.85 5.18-4.68c.223-.204-.054-.31-.346-.106l-6.4 4.02-2.76-.92c-.6-.183-.612-.6.125-.89l10.782-4.156c.5-.183.94.114.78.89z"/>
-                    </svg>
-                  </a>
-                  <a href="#" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                    <svg className="w-5 h-5 text-[#FFBE1A]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Form */}
-            <div className="bg-white/[0.02] rounded-2xl p-8 border border-white/5">
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="first_name" className="block text-sm font-medium text-white mb-2">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      id="first_name"
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFBE1A]/50 focus:border-[#FFBE1A] text-white placeholder-white/40"
-                      placeholder="John"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="last_name" className="block text-sm font-medium text-white mb-2">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      id="last_name"
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFBE1A]/50 focus:border-[#FFBE1A] text-white placeholder-white/40"
-                      placeholder="Doe"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFBE1A]/50 focus:border-[#FFBE1A] text-white placeholder-white/40"
-                    placeholder="john@example.com"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-white mb-2">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFBE1A]/50 focus:border-[#FFBE1A] text-white placeholder-white/40"
-                    placeholder="How can we help?"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-white mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    rows={4}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFBE1A]/50 focus:border-[#FFBE1A] text-white placeholder-white/40"
-                    placeholder="Your message..."
-                  ></textarea>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full px-6 py-3 bg-[#FFBE1A] text-black font-medium rounded-lg hover:bg-[#FFBE1A]/90 transition-colors"
-                >
-                  Send Message
-                </button>
-              </form>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-white text-center mb-12">
-            Frequently Asked Questions
-          </h2>
-          <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <FaqItem key={index} {...faq} />
+      {/* Skills Section */}
+      <section id="skills" className="py-24 relative">
+        {/* Background Sparkles */}
+        <div className="absolute inset-0">
+          <SparklesCore
+            background="transparent"
+            minSize={0.4}
+            maxSize={1}
+            particleDensity={40}
+            className="w-full h-full"
+            particleColor="#FFFFFF"
+            speed={0.2}
+          />
+        </div>
+
+        <div className="px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
+          <motion.div 
+            className="mx-auto max-w-2xl lg:text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-base font-semibold leading-7 text-indigo-400">Expertise & Capabilities</h2>
+            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+              Advanced AI Development
+            </p>
+            <p className="mt-6 text-lg leading-8 text-gray-300">
+              Combining cutting-edge AI technologies with robust software development to create intelligent, scalable solutions.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none"
+            variants={stagger}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+          >
+            <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
+              {skills.map((skill, index) => (
+                <motion.div 
+                  key={skill.title} 
+                  variants={fadeInUp}
+                  custom={index}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="relative group">
+                    <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-r from-neutral-800/50 to-neutral-700/50 opacity-0 group-hover:opacity-100 transition-all duration-500 blur-sm" />
+                    <div className="relative h-full bg-black/40 rounded-lg p-6 ring-1 ring-neutral-800 backdrop-blur-sm group-hover:ring-neutral-700 transition-all duration-300">
+                      <dt className="flex items-center gap-x-3 text-base font-medium text-neutral-200">
+                        <div className="h-10 w-10 flex items-center justify-center rounded-lg bg-neutral-900/50 ring-1 ring-neutral-800 group-hover:ring-neutral-700 transition-all duration-300">
+                          {skill.icon}
+                        </div>
+                        {skill.title}
+                      </dt>
+                      <dd className="mt-3 text-sm text-neutral-400 leading-relaxed">
+                        {skill.description}
+                      </dd>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </dl>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Game Section */}
+      <section id="tetris" className="py-24 relative">
+        {/* Background Sparkles */}
+        <div className="absolute inset-0">
+          <SparklesCore
+            background="transparent"
+            minSize={0.4}
+            maxSize={1}
+            particleDensity={40}
+            className="w-full h-full"
+            particleColor="#FFFFFF"
+            speed={0.2}
+          />
+        </div>
+
+        <div className="px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
+          <motion.div 
+            className="mx-auto max-w-2xl lg:text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-base font-semibold leading-7 text-indigo-400">Take a Break</h2>
+            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Play Snake
+            </p>
+            <p className="mt-6 text-lg leading-8 text-gray-300">
+              Use arrow keys to control the snake. Space to pause/resume. Collect food to grow and increase your score!
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="flex justify-center"
+          >
+            <SnakeGame />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Projects Section with 3D Cards */}
+      <section id="portfolio" className="py-24 relative">
+        {/* Background Sparkles */}
+        <div className="absolute inset-0">
+          <SparklesCore
+            background="transparent"
+            minSize={0.4}
+            maxSize={1}
+            particleDensity={40}
+            className="w-full h-full"
+            particleColor="#FFFFFF"
+            speed={0.2}
+          />
+          </div>
+
+        <div className="px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
+          <motion.div 
+            className="mx-auto max-w-2xl lg:text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-base font-semibold leading-7 text-indigo-400">Portfolio</h2>
+            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Featured Projects
+            </p>
+          </motion.div>
+          <motion.div 
+            className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2"
+            variants={stagger}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+          >
+            {projects.map((project, index) => (
+              <motion.article 
+                key={project.title} 
+                variants={fadeInUp}
+                custom={index}
+                whileHover={{ 
+                  scale: 1.02,
+                  rotateY: 5,
+                  rotateX: -5,
+                }}
+                className="group relative flex flex-col items-start bg-gray-900/30 rounded-3xl p-8 ring-1 ring-gray-800/50 hover:ring-gray-700/50 transition-all duration-300 backdrop-blur-xl cursor-pointer"
+                onClick={() => setSelectedProject(project)}
+                style={{
+                  transformStyle: "preserve-3d",
+                  perspective: "1000px"
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl" />
+                <div 
+                  className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-6 bg-gray-900/50"
+                  style={{
+                    transform: "translateZ(20px)",
+                    transformStyle: "preserve-3d"
+                  }}
+                >
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div className="relative w-full" style={{ transform: "translateZ(30px)" }}>
+                  <h3 className="text-xl font-semibold leading-6 text-white group-hover:text-indigo-400 transition-colors">
+                    {project.title}
+                  </h3>
+                  <p className="mt-4 text-sm leading-6 text-gray-400">{project.description}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {project.tech.map((tech) => (
+                      <span 
+                        key={tech} 
+                        className="inline-flex items-center rounded-full bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-400 ring-1 ring-inset ring-blue-500/20 backdrop-blur-sm"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                </div>
+                </div>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-24 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-white mb-4">
-              5000+ makers built AI tools,<br />
-              SaaS, and more
-            </h2>
+      {/* Contact Section */}
+      <section id="contact" className="py-24 relative">
+        {/* Background Sparkles */}
+        <div className="absolute inset-0">
+          <SparklesCore
+            background="transparent"
+            minSize={0.4}
+            maxSize={1}
+            particleDensity={40}
+            className="w-full h-full"
+            particleColor="#FFFFFF"
+            speed={0.2}
+          />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Testimonial 1 */}
-            <div className="bg-[#111111] rounded-xl p-6 border border-white/5">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-medium">
-                  SC
-                </div>
-                <div>
-                  <h3 className="text-white font-medium">Sarah Chen</h3>
-                  <p className="text-sm text-white/60">CTO at TechStart</p>
-                </div>
-              </div>
-              <p className="text-white/80 mb-6">
-                This toolkit saved us months of development time. We launched our MVP in just 2 weeks!
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-2xl font-bold text-white">3 months</div>
-                  <div className="text-sm text-white/60">Time Saved</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-[#4ADE80]">300%</div>
-                  <div className="text-sm text-white/60">ROI</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Testimonial 2 */}
-            <div className="bg-[#111111] rounded-xl p-6 border border-white/5">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-medium">
-                  MJ
-                </div>
-                <div>
-                  <h3 className="text-white font-medium">Mike Johnson</h3>
-                  <p className="text-sm text-white/60">Lead Developer</p>
-                </div>
-              </div>
-              <p className="text-white/80 mb-6">
-                The code quality is exceptional. It's like having a senior developer on the team.
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-2xl font-bold text-white">50+</div>
-                  <div className="text-sm text-white/60">Components</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-[#4ADE80]">100%</div>
-                  <div className="text-sm text-white/60">TypeScript</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Testimonial 3 */}
-            <div className="bg-[#111111] rounded-xl p-6 border border-white/5">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-medium">
-                  LP
-                </div>
-                <div>
-                  <h3 className="text-white font-medium">Lisa Park</h3>
-                  <p className="text-sm text-white/60">Founder at AppLabs</p>
-                </div>
-              </div>
-              <p className="text-white/80 mb-6">
-                Best investment we made for our startup. The support is amazing too!
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-2xl font-bold text-white">24/7</div>
-                  <div className="text-sm text-white/60">Support</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-[#4ADE80]">95%</div>
-                  <div className="text-sm text-white/60">Satisfaction</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Social Proof */}
-          <div className="mt-16 text-center">
-            <div className="inline-flex items-center bg-white/5 px-4 py-2 rounded-full">
-              <div className="flex -space-x-2 mr-3">
-                {[...Array(5)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-8 h-8 rounded-full border-2 border-[#111111] bg-gradient-to-br from-purple-500 to-pink-500"
-                    style={{ transform: `translateX(${i * -4}px)` }}
-                  />
-                ))}
-              </div>
-              <div className="text-white/60 text-sm">
-                Join <span className="text-white font-medium">5,000+</span> makers
-              </div>
-            </div>
-          </div>
+        <div className="px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
+          <motion.div 
+            className="mx-auto max-w-2xl lg:text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-base font-semibold leading-7 text-indigo-400">Contact</h2>
+            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Let's Connect
+            </p>
+          </motion.div>
+          <motion.div 
+            className="mx-auto mt-16 max-w-2xl"
+            variants={stagger}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+          >
+            <dl className="grid grid-cols-1 gap-y-8 sm:grid-cols-2 sm:gap-x-6">
+              <motion.div 
+                variants={fadeInUp}
+                whileHover={{ scale: 1.05 }}
+                className="group flex items-center gap-x-3 rounded-2xl bg-gray-900/50 p-6 ring-1 ring-gray-800/50 hover:ring-gray-700/50 transition-all duration-300 backdrop-blur-xl"
+              >
+                <dt className="flex-none">
+                  <EnvelopeIcon className="h-6 w-6 text-indigo-400" />
+                </dt>
+                <dd>
+                  <a 
+                    href="mailto:thamimvelase3@gmail.com" 
+                    className="text-sm leading-6 text-gray-300 hover:text-white transition-colors"
+                  >
+                    thamimvelase3@gmail.com
+                  </a>
+                </dd>
+              </motion.div>
+              <motion.div 
+                variants={fadeInUp}
+                whileHover={{ scale: 1.05 }}
+                className="group flex items-center gap-x-3 rounded-2xl bg-gray-900/50 p-6 ring-1 ring-gray-800/50 hover:ring-gray-700/50 transition-all duration-300 backdrop-blur-xl"
+              >
+                <dt className="flex-none">
+                  <PhoneIcon className="h-6 w-6 text-indigo-400" />
+                </dt>
+                <dd>
+                  <a 
+                    href="tel:0609585567" 
+                    className="text-sm leading-6 text-gray-300 hover:text-white transition-colors"
+                  >
+                    060 958 5567
+                  </a>
+                </dd>
+              </motion.div>
+              <motion.div 
+                variants={fadeInUp}
+                whileHover={{ scale: 1.05 }}
+                className="group flex items-center gap-x-3 rounded-2xl bg-gray-900/50 p-6 ring-1 ring-gray-800/50 hover:ring-gray-700/50 transition-all duration-300 backdrop-blur-xl sm:col-span-2"
+              >
+                <dt className="flex-none">
+                  <MapPinIcon className="h-6 w-6 text-indigo-400" />
+                </dt>
+                <dd className="text-sm leading-6 text-gray-300">
+                  Johannesburg CBD, South Africa
+                </dd>
+              </motion.div>
+            </dl>
+          </motion.div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-20 px-4 border-t border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="font-semibold text-white mb-4">Product</h3>
-              <ul className="space-y-2">
-                <li><Link href="/features" className="text-white/70 hover:text-white">Features</Link></li>
-                <li><Link href="/pricing" className="text-white/70 hover:text-white">Pricing</Link></li>
-                <li><Link href="/docs" className="text-white/70 hover:text-white">Documentation</Link></li>
-                <li><Link href="/changelog" className="text-white/70 hover:text-white">Changelog</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-white mb-4">Company</h3>
-              <ul className="space-y-2">
-                <li><Link href="/about" className="text-white/70 hover:text-white">About</Link></li>
-                <li><Link href="/blog" className="text-white/70 hover:text-white">Blog</Link></li>
-                <li><Link href="/careers" className="text-white/70 hover:text-white">Careers</Link></li>
-                <li><Link href="/contact" className="text-white/70 hover:text-white">Contact</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-white mb-4">Resources</h3>
-              <ul className="space-y-2">
-                <li><Link 
-                  href="https://github.com/zainulabedeen123/best-saas-kit/discussions" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-white/70 hover:text-white"
-                >
-                  Community
-                </Link></li>
-                <li><Link href="/help" className="text-white/70 hover:text-white">Help Center</Link></li>
-                <li><Link href="/status" className="text-white/70 hover:text-white">Status</Link></li>
-                <li><Link href="/terms" className="text-white/70 hover:text-white">Terms of Service</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-white mb-4">Connect</h3>
-              <ul className="space-y-2">
-                <li><Link href="https://twitter.com" className="text-white/70 hover:text-white">Twitter</Link></li>
-                <li><Link href="https://github.com/zainulabedeen123/best-saas-kit" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white">GitHub</Link></li>
-                <li><Link href="https://discord.com" className="text-white/70 hover:text-white">Discord</Link></li>
-                <li><Link href="/newsletter" className="text-white/70 hover:text-white">Newsletter</Link></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* Project Modal */}
+      <ProjectModal 
+        isOpen={selectedProject !== null}
+        onClose={() => setSelectedProject(null)}
+        project={selectedProject || projects[0]}
+      />
     </div>
   )
 }
