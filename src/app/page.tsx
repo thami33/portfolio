@@ -12,20 +12,30 @@ import {
   PhoneIcon,
   MapPinIcon,
   ArrowRightIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
 } from '@heroicons/react/24/outline'
 import { RainbowButton } from "@/components/ui/rainbow-button"
 import { Squares } from "@/components/ui/squares-background"
 import { NavMenu } from "@/components/ui/nav-menu"
 import { GradientCard } from "@/components/ui/gradient-card"
-import { FloatingSphere } from "@/components/ui/floating-sphere"
-import { ParticleField } from "@/components/ui/particle-field"
 import { ScrollProgress } from "@/components/ui/scroll-progress"
-import { SparklesCore } from "@/components/ui/sparkles"
-import { Gravity, MatterBody } from "@/components/ui/gravity"
 import { HeroGeometric } from "@/components/ui/shape-landing-hero"
 import { ProjectModal } from "@/components/ui/project-modal"
 import { SnakeGame } from "@/components/ui/snake-game"
-import { useState } from 'react'
+import { useState, useEffect, lazy, Suspense, useRef } from 'react'
+import { ClientOnly } from '@/components/ui/client-only'
+import { useSectionScroll } from '@/utils/scroll-helpers'
+
+// Dynamically import heavy components
+const FloatingSphere = lazy(() => import('@/components/ui/floating-sphere').then(mod => ({ default: mod.FloatingSphere })))
+const ParticleField = lazy(() => import('@/components/ui/particle-field').then(mod => ({ default: mod.ParticleField })))
+const SparklesCore = lazy(() => import('@/components/ui/sparkles').then(mod => ({ default: mod.SparklesCore })))
+const Gravity = lazy(() => import('@/components/ui/gravity').then(mod => ({ default: mod.Gravity })))
+const MatterBody = lazy(() => import('@/components/ui/gravity').then(mod => ({ default: mod.MatterBody })))
+
+// Placeholder component for lazy-loaded components
+const LazyComponentFallback = () => <div className="w-full h-full bg-black/20" />
 
 const skills = [
   {
@@ -197,216 +207,237 @@ export default function Home() {
   const { scrollYProgress } = useScroll()
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+  
+  // Define sections for scroll navigation
+  const sections = ['hero', 'about', 'skills', 'snake', 'portfolio', 'contact'];
+  
+  // Use our custom section scroll hook
+  const { activeSection, scrollToSection } = useSectionScroll(sections, {
+    offset: 80, // Account for the fixed header
+    scrollThreshold: 30, // Lower threshold for more responsive scrolling
+    scrollCooldown: 800, // Shorter cooldown for smoother experience
+    onlyInHero: true, // Only apply section-based scrolling in the hero section
+  });
+  
+  // Add a ref to the hero section since it doesn't have an ID in the markup
+  const heroRef = useRef<HTMLElement>(null);
+  
+  // Set up the hero section ID when component mounts
+  useEffect(() => {
+    if (heroRef.current) {
+      heroRef.current.id = 'hero';
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-indigo-500/90 selection:text-white">
       <ScrollProgress />
-      <NavMenu />
+      <NavMenu activeSection={sections[activeSection]} />
       
       {/* Background Effects */}
-      <ParticleField />
+      <ClientOnly fallback={<LazyComponentFallback />}>
+        <Suspense fallback={<LazyComponentFallback />}>
+          <ParticleField />
+        </Suspense>
+      </ClientOnly>
       <div className="fixed inset-0 -z-20 h-full w-full bg-black">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent" />
-        </div>
+      </div>
 
-      {/* Scroll Down Arrow - Repositioned to bottom left */}
-      <motion.div 
-        className="fixed left-8 bottom-8 w-fit z-30 cursor-pointer flex items-center gap-3 bg-black/20 backdrop-blur-sm px-4 py-3 rounded-full ring-1 ring-white/10 hover:ring-white/20 transition-all"
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ 
-          y: 0,
-          opacity: 1 
-        }}
-        transition={{ 
-          y: {
-            duration: 0.5,
-            ease: "easeOut"
-          },
-          opacity: {
-            duration: 0.5
-          }
-        }}
-        onClick={() => {
-          const sections = ['about', 'skills', 'tetris', 'portfolio', 'contact'];
-          const currentScroll = window.scrollY + window.innerHeight / 2;
-          
-          // Get all section positions
-          const sectionPositions = sections.map(id => {
-            const element = document.getElementById(id);
-            if (!element) return null;
-            return {
-              id,
-              position: element.getBoundingClientRect().top + window.scrollY
-            };
-          }).filter((section): section is { id: string; position: number } => section !== null);
-          
-          // Find the next section
-          const nextSection = sectionPositions.find(section => section.position > currentScroll)?.id || sections[0];
-          
-          // Scroll to it
-          document.getElementById(nextSection)?.scrollIntoView({ behavior: 'smooth' });
-        }}
-      >
-        <div className="p-2 rounded-full bg-gradient-to-r from-indigo-500/20 to-cyan-500/20 backdrop-blur-sm ring-1 ring-white/20 transition-all hover:from-indigo-500/30 hover:to-cyan-500/30 hover:ring-white/30">
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            className="h-5 w-5 text-white/40 transition-colors hover:text-white/90" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
+      {/* Scroll Down Arrow - Only show in hero section */}
+      <ClientOnly>
+        {activeSection === 0 && (
+          <motion.div 
+            className="fixed left-8 bottom-8 w-fit z-30 cursor-pointer flex items-center gap-3 bg-black/20 backdrop-blur-sm px-4 py-3 rounded-full ring-1 ring-white/10 hover:ring-white/20 transition-all"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ 
+              y: 0,
+              opacity: 1 
+            }}
+            transition={{ 
+              y: {
+                duration: 0.5,
+                ease: "easeOut"
+              },
+              opacity: {
+                duration: 0.5
+              }
+            }}
+            onClick={() => {
+              // Scroll to the next section
+              scrollToSection(activeSection + 1 >= sections.length ? 0 : activeSection + 1);
+            }}
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M19 14l-7 7m0 0l-7-7m7 7V3" 
-            />
-          </svg>
-        </div>
-        <span className="text-white/40 text-sm font-medium transition-colors hover:text-white/90">Explore sections</span>
-      </motion.div>
+            <span className="text-sm font-medium">
+              {activeSection + 1 >= sections.length 
+                ? "Back to Top" 
+                : "Explore"}
+            </span>
+            <motion.div
+              animate={{
+                y: [0, 3, 0],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "loop",
+              }}
+            >
+              <ArrowDownIcon className="w-4 h-4" />
+            </motion.div>
+          </motion.div>
+        )}
+      </ClientOnly>
 
-      {/* Hero Section */}
-      <div className="relative min-h-screen">
-        <HeroGeometric 
-          badge="AI Developer"
-          title1="Thami Mvelase"
-          title2="AI & Full Stack Developer"
-        />
-        
-        {/* Gravity Demo */}
-        <div className="absolute inset-0 z-20">
-          <div className="absolute inset-0" style={{ pointerEvents: 'none' }}>
-            <div style={{ pointerEvents: 'auto' }}>
-              <Gravity className="w-full h-full" gravity={{ x: 0, y: 1 }}>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="30%"
-                  y="10%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-full px-8 py-4">
-                    AI
-                  </div>
-                </MatterBody>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="40%"
-                  y="15%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-full px-8 py-4">
-                    ML
-                </div>
-                </MatterBody>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="50%"
-                  y="20%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-violet-500 to-purple-500 text-white rounded-full px-8 py-4">
-                    Next.js
-                  </div>
-                </MatterBody>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="60%"
-                  y="25%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-full px-8 py-4">
-                    React
-                  </div>
-                </MatterBody>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="70%"
-                  y="30%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full px-8 py-4">
-                    Python
-                  </div>
-                </MatterBody>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="35%"
-                  y="35%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-full px-8 py-4">
-                    TypeScript
-                  </div>
-                </MatterBody>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="45%"
-                  y="40%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-full px-8 py-4">
-                    Tailwind
-                  </div>
-                </MatterBody>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="55%"
-                  y="45%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-rose-500 to-red-500 text-white rounded-full px-8 py-4">
-                    Android
-                  </div>
-                </MatterBody>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="65%"
-                  y="50%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full px-8 py-4">
-                    iOS
-                  </div>
-                </MatterBody>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="75%"
-                  y="55%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-teal-500 to-cyan-500 text-white rounded-full px-8 py-4">
-                    React Native
-                  </div>
-                </MatterBody>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="40%"
-                  y="60%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full px-8 py-4">
-                    Cursor AI
-                  </div>
-                </MatterBody>
-                <MatterBody
-                  matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
-                  x="50%"
-                  y="65%"
-                >
-                  <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-full px-8 py-4">
-                    JavaScript
-                  </div>
-                </MatterBody>
-              </Gravity>
+      {/* Hero Section - Add ref for section scrolling */}
+      <ClientOnly fallback={<LazyComponentFallback />}>
+        <section ref={heroRef} className="w-full min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-black">
+          <HeroGeometric 
+            badge="AI Developer"
+            title1="Thami Mvelase"
+            title2="AI & Full Stack Developer"
+          />
+          
+          {/* Gravity Demo */}
+          <div className="absolute inset-0 z-20">
+            <div className="absolute inset-0" style={{ pointerEvents: 'none' }}>
+              <div style={{ pointerEvents: 'auto' }}>
+                <Suspense fallback={<LazyComponentFallback />}>
+                  <Gravity className="w-full h-full" gravity={{ x: 0, y: 1 }}>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="30%"
+                      y="10%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-full px-8 py-4">
+                        AI
+                      </div>
+                    </MatterBody>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="40%"
+                      y="15%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-full px-8 py-4">
+                        ML
+                      </div>
+                    </MatterBody>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="50%"
+                      y="20%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-violet-500 to-purple-500 text-white rounded-full px-8 py-4">
+                        Next.js
+                      </div>
+                    </MatterBody>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="60%"
+                      y="25%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-full px-8 py-4">
+                        React
+                      </div>
+                    </MatterBody>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="70%"
+                      y="30%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full px-8 py-4">
+                        Python
+                      </div>
+                    </MatterBody>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="35%"
+                      y="35%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-full px-8 py-4">
+                        TypeScript
+                      </div>
+                    </MatterBody>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="45%"
+                      y="40%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-full px-8 py-4">
+                        Tailwind
+                      </div>
+                    </MatterBody>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="55%"
+                      y="45%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-rose-500 to-red-500 text-white rounded-full px-8 py-4">
+                        Android
+                      </div>
+                    </MatterBody>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="65%"
+                      y="50%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full px-8 py-4">
+                        iOS
+                      </div>
+                    </MatterBody>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="75%"
+                      y="55%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-teal-500 to-cyan-500 text-white rounded-full px-8 py-4">
+                        React Native
+                      </div>
+                    </MatterBody>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="40%"
+                      y="60%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full px-8 py-4">
+                        Cursor AI
+                      </div>
+                    </MatterBody>
+                    <MatterBody
+                      matterBodyOptions={{ friction: 0.5, restitution: 0.2 }}
+                      x="50%"
+                      y="65%"
+                    >
+                      <div className="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-full px-8 py-4">
+                        JavaScript
+                      </div>
+                    </MatterBody>
+                  </Gravity>
+                </Suspense>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
+      </ClientOnly>
 
       {/* About Me Section */}
       <section id="about" className="py-24 relative">
         {/* Background Sparkles */}
         <div className="absolute inset-0">
-          <SparklesCore
-            background="transparent"
-            minSize={0.4}
-            maxSize={1}
-            particleDensity={40}
-            className="w-full h-full"
-            particleColor="#FFFFFF"
-            speed={0.2}
-          />
+          <ClientOnly fallback={<LazyComponentFallback />}>
+            <Suspense fallback={<LazyComponentFallback />}>
+              <SparklesCore
+                background="transparent"
+                minSize={0.4}
+                maxSize={1}
+                particleDensity={40}
+                className="w-full h-full"
+                particleColor="#FFFFFF"
+                speed={0.2}
+              />
+            </Suspense>
+          </ClientOnly>
         </div>
 
         <div className="px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
@@ -493,15 +524,19 @@ export default function Home() {
       <section id="skills" className="py-24 relative">
         {/* Background Sparkles */}
         <div className="absolute inset-0">
-          <SparklesCore
-            background="transparent"
-            minSize={0.4}
-            maxSize={1}
-            particleDensity={40}
-            className="w-full h-full"
-            particleColor="#FFFFFF"
-            speed={0.2}
-          />
+          <ClientOnly fallback={<LazyComponentFallback />}>
+            <Suspense fallback={<LazyComponentFallback />}>
+              <SparklesCore
+                background="transparent"
+                minSize={0.4}
+                maxSize={1}
+                particleDensity={40}
+                className="w-full h-full"
+                particleColor="#FFFFFF"
+                speed={0.2}
+              />
+            </Suspense>
+          </ClientOnly>
         </div>
 
         <div className="px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
@@ -559,18 +594,22 @@ export default function Home() {
       </section>
 
       {/* Game Section */}
-      <section id="tetris" className="py-24 relative">
+      <section id="snake" className="py-24 relative">
         {/* Background Sparkles */}
         <div className="absolute inset-0">
-          <SparklesCore
-            background="transparent"
-            minSize={0.4}
-            maxSize={1}
-            particleDensity={40}
-            className="w-full h-full"
-            particleColor="#FFFFFF"
-            speed={0.2}
-          />
+          <ClientOnly fallback={<LazyComponentFallback />}>
+            <Suspense fallback={<LazyComponentFallback />}>
+              <SparklesCore
+                background="transparent"
+                minSize={0.4}
+                maxSize={1}
+                particleDensity={40}
+                className="w-full h-full"
+                particleColor="#FFFFFF"
+                speed={0.2}
+              />
+            </Suspense>
+          </ClientOnly>
         </div>
 
         <div className="px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
@@ -606,16 +645,20 @@ export default function Home() {
       <section id="portfolio" className="py-24 relative">
         {/* Background Sparkles */}
         <div className="absolute inset-0">
-          <SparklesCore
-            background="transparent"
-            minSize={0.4}
-            maxSize={1}
-            particleDensity={40}
-            className="w-full h-full"
-            particleColor="#FFFFFF"
-            speed={0.2}
-          />
-          </div>
+          <ClientOnly fallback={<LazyComponentFallback />}>
+            <Suspense fallback={<LazyComponentFallback />}>
+              <SparklesCore
+                background="transparent"
+                minSize={0.4}
+                maxSize={1}
+                particleDensity={40}
+                className="w-full h-full"
+                particleColor="#FFFFFF"
+                speed={0.2}
+              />
+            </Suspense>
+          </ClientOnly>
+        </div>
 
         <div className="px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
           <motion.div 
@@ -683,7 +726,7 @@ export default function Home() {
                         {tech}
                       </span>
                     ))}
-                </div>
+                  </div>
                 </div>
               </motion.article>
             ))}
@@ -695,16 +738,20 @@ export default function Home() {
       <section id="contact" className="py-24 relative">
         {/* Background Sparkles */}
         <div className="absolute inset-0">
-          <SparklesCore
-            background="transparent"
-            minSize={0.4}
-            maxSize={1}
-            particleDensity={40}
-            className="w-full h-full"
-            particleColor="#FFFFFF"
-            speed={0.2}
-          />
-          </div>
+          <ClientOnly fallback={<LazyComponentFallback />}>
+            <Suspense fallback={<LazyComponentFallback />}>
+              <SparklesCore
+                background="transparent"
+                minSize={0.4}
+                maxSize={1}
+                particleDensity={40}
+                className="w-full h-full"
+                particleColor="#FFFFFF"
+                speed={0.2}
+              />
+            </Suspense>
+          </ClientOnly>
+        </div>
 
         <div className="px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
           <motion.div 
@@ -779,11 +826,15 @@ export default function Home() {
       </section>
 
       {/* Project Modal */}
-      <ProjectModal 
-        isOpen={selectedProject !== null}
-        onClose={() => setSelectedProject(null)}
-        project={selectedProject || projects[0]}
-      />
+      <ClientOnly>
+        {selectedProject && (
+          <ProjectModal
+            isOpen={true}
+            project={selectedProject}
+            onClose={() => setSelectedProject(null)}
+          />
+        )}
+      </ClientOnly>
     </div>
   )
 }

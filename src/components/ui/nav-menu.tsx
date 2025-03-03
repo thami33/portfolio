@@ -1,12 +1,54 @@
+'use client'
+
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { useEffect, useState } from "react"
 
 interface NavMenuProps {
   className?: string
+  activeSection?: string
 }
 
-export function NavMenu({ className }: NavMenuProps) {
+export function NavMenu({ className, activeSection }: NavMenuProps) {
+  // Track active section internally if not provided as prop
+  const [currentSection, setCurrentSection] = useState<string | null>(activeSection || null)
+  
+  // Update active section when scrolling if not controlled by parent
+  useEffect(() => {
+    if (activeSection) {
+      setCurrentSection(activeSection)
+      return
+    }
+    
+    const handleScroll = () => {
+      const sections = ['hero', 'about', 'skills', 'portfolio', 'contact']
+      const scrollPosition = window.scrollY + window.innerHeight / 3
+      
+      // Find the current section based on scroll position
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sections[i])
+        if (!section) continue
+        
+        const sectionTop = section.offsetTop
+        if (scrollPosition >= sectionTop) {
+          setCurrentSection(sections[i])
+          return
+        }
+      }
+      
+      // Default to first section if above all sections
+      setCurrentSection('hero')
+    }
+    
+    window.addEventListener('scroll', handleScroll)
+    handleScroll() // Initial check
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [activeSection])
+  
   return (
     <nav className={cn("fixed top-0 inset-x-0 z-50", className)}>
       <div className="relative">
@@ -35,17 +77,109 @@ export function NavMenu({ className }: NavMenuProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <Link href="#about" className="text-sm text-gray-300 hover:text-white transition-colors">
+              <Link 
+                href="#about" 
+                className={cn(
+                  "text-sm transition-colors relative group",
+                  currentSection === 'about' 
+                    ? "text-white font-medium" 
+                    : "text-gray-300 hover:text-white"
+                )}
+              >
                 About
+                {currentSection === 'about' && (
+                  <motion.span 
+                    layoutId="activeSection"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
               </Link>
-              <Link href="#skills" className="text-sm text-gray-300 hover:text-white transition-colors">
+              
+              <Link 
+                href="#skills" 
+                className={cn(
+                  "text-sm transition-colors relative group",
+                  currentSection === 'skills' 
+                    ? "text-white font-medium" 
+                    : "text-gray-300 hover:text-white"
+                )}
+              >
                 Skills
+                {currentSection === 'skills' && (
+                  <motion.span 
+                    layoutId="activeSection"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
               </Link>
-              <Link href="#portfolio" className="text-sm text-gray-300 hover:text-white transition-colors">
+              
+              <Link 
+                href="#snake" 
+                className={cn(
+                  "text-sm transition-colors relative group",
+                  currentSection === 'snake' 
+                    ? "text-white font-medium" 
+                    : "text-gray-300 hover:text-white"
+                )}
+              >
+                Game
+                {currentSection === 'snake' && (
+                  <motion.span 
+                    layoutId="activeSection"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
+              </Link>
+              
+              <Link 
+                href="#portfolio" 
+                className={cn(
+                  "text-sm transition-colors relative group",
+                  currentSection === 'portfolio' 
+                    ? "text-white font-medium" 
+                    : "text-gray-300 hover:text-white"
+                )}
+              >
                 Projects
+                {currentSection === 'portfolio' && (
+                  <motion.span 
+                    layoutId="activeSection"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
               </Link>
-              <Link href="#contact" className="text-sm text-gray-300 hover:text-white transition-colors">
+              
+              <Link 
+                href="#contact" 
+                className={cn(
+                  "text-sm transition-colors relative group",
+                  currentSection === 'contact' 
+                    ? "text-white font-medium" 
+                    : "text-gray-300 hover:text-white"
+                )}
+              >
                 Contact
+                {currentSection === 'contact' && (
+                  <motion.span 
+                    layoutId="activeSection"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
               </Link>
             </motion.div>
 

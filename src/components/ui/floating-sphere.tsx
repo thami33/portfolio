@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { motion } from 'framer-motion'
 
@@ -8,6 +8,8 @@ export function FloatingSphere() {
   const rendererRef = useRef<THREE.WebGLRenderer>()
   const sceneRef = useRef<THREE.Scene>()
   const cameraRef = useRef<THREE.PerspectiveCamera>()
+  const animationFrameId = useRef<number>()
+  const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -20,13 +22,18 @@ export function FloatingSphere() {
     camera.position.z = 5
     cameraRef.current = camera
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
+    const renderer = new THREE.WebGLRenderer({ 
+      alpha: true, 
+      antialias: true,
+      powerPreference: 'high-performance'
+    })
     renderer.setSize(300, 300)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) // Limit pixel ratio for performance
     rendererRef.current = renderer
     containerRef.current.appendChild(renderer.domElement)
 
-    // Create sphere
-    const geometry = new THREE.SphereGeometry(2, 64, 64)
+    // Create sphere with reduced geometry complexity
+    const geometry = new THREE.SphereGeometry(2, 32, 32) // Reduced from 64, 64
     const material = new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 0 },
@@ -64,30 +71,58 @@ export function FloatingSphere() {
     sphereRef.current = sphere
     scene.add(sphere)
 
-    // Animation
-    let animationFrameId: number
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate)
+    // Intersection Observer to pause rendering when not visible
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting)
+      },
+      { threshold: 0.1 }
+    )
+    
+    if (containerRef.current) {
+      observer.observe(containerRef.current)
+    }
+
+    // Animation with time-based rotation instead of frame-based
+    let lastTime = 0
+    const animate = (time: number) => {
+      animationFrameId.current = requestAnimationFrame(animate)
+      
+      // Skip rendering if not visible
+      if (!isVisible) return
+      
+      const delta = (time - lastTime) / 1000 // Convert to seconds
+      lastTime = time
+      
       if (sphere && material.uniforms) {
-        sphere.rotation.x += 0.001
-        sphere.rotation.y += 0.002
-        material.uniforms.time.value += 0.01
+        // Use time-based animation for consistent speed
+        sphere.rotation.x += 0.1 * delta
+        sphere.rotation.y += 0.2 * delta
+        material.uniforms.time.value += 0.5 * delta
       }
+      
       renderer.render(scene, camera)
     }
-    animate()
+    
+    animationFrameId.current = requestAnimationFrame(animate)
 
     // Cleanup
     return () => {
-      cancelAnimationFrame(animationFrameId)
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current)
+      }
+      
       renderer.dispose()
       geometry.dispose()
       material.dispose()
+      
       if (containerRef.current) {
         containerRef.current.removeChild(renderer.domElement)
       }
+      
+      observer.disconnect()
     }
-  }, [])
+  }, [isVisible])
 
   return (
     <motion.div

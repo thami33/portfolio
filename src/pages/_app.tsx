@@ -1,0 +1,1 @@
+import type { AppProps } from "next/app"; import { useEffect } from "react"; import { suppressHydrationErrors } from "@/utils/hydration-helpers"; export default function App({ Component, pageProps }: AppProps) { useEffect(() => { const cleanup = suppressHydrationErrors(); return cleanup; }, []); return <Component {...pageProps} />; }
