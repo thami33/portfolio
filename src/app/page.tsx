@@ -466,7 +466,7 @@ export default function Home() {
               <div className="aspect-square w-full max-w-md mx-auto overflow-hidden rounded-2xl bg-gray-900/50 ring-1 ring-white/10 backdrop-blur-sm">
                 <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-pink-500/20 opacity-50" />
                 <Image
-                  src="/profile-image.jpg"
+                  src="/profile-image.JPG"
                   alt="Thami Mvelase"
                   fill
                   className="object-cover"
