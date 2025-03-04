@@ -1,153 +1,107 @@
-# Best SaaS Kit Pro 🚀
+# Thami Mvelase | Portfolio 🚀
 
-A modern, production-ready SaaS starter kit built with Next.js 15, TypeScript, Tailwind CSS, and more. Perfect for launching your next SaaS project quickly and efficiently.
+A modern, interactive portfolio website showcasing my skills as an AI and Full-Stack Developer.
 
-![SaaS Kit Banner](public/Saas-Header.png)
+![Portfolio Website](public/portfolio-hero.png)
 
 ## 🌟 Features
 
-- ⚡ **Next.js 15** with App Router & Server Actions
-- 🎨 **Tailwind CSS 3.3** & **shadcn/ui** for beautiful UI
-- 📱 **Fully Responsive** design
-- 🔐 **Authentication** with Supabase
-- 💳 **Stripe Integration** for payments
-- 📧 **Email Integration** with Resend
-- 🎯 **SEO Optimized**
-- 🌙 **Dark Mode** ready
-- 🔍 **Type Safe** with TypeScript 5.3
+- ⚡ **Next.js 15** with App Router for optimized performance
+- 🎨 **Tailwind CSS** for beautiful responsive design
+- 🕹️ **Interactive Elements** including a Snake game with power-ups
+- ✨ **Modern UI Effects** with particle animations and floating elements
+- 🧠 **AI Integration** showcasing AI development expertise
+- 🌓 **Dark Mode** optimized interface
+- 📱 **Fully Responsive** design that works on all devices
+- 🔍 **Type Safe** with TypeScript
+
+## 🎮 Interactive Elements
+
+- **Snake Game**: Play an engaging Snake game with power-ups and fun facts
+- **Particle Effects**: Dynamic particle backgrounds and sparkle effects
+- **Physics-based Animations**: Floating elements using Matter.js
+- **Smooth Transitions**: Engaging animations with Framer Motion
+
+## 💻 Tech Stack
+
+- **Framework**: Next.js 15
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Animation**: Framer Motion
+- **Physics**: Matter.js
+- **3D Graphics**: Three.js
+- **Icons**: Heroicons
+- **Particles**: tsParticles
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed:
-- [Node.js](https://nodejs.org/) (version 18.17 or higher)
-- [Git](https://git-scm.com/)
-- [npm](https://www.npmjs.com/) (comes with Node.js)
+- Node.js (version 18 or higher)
+- npm or yarn
 
-### Step-by-Step Installation Guide
+### Installation
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/zainulabedeen123/best-saas-kit.git
+   git clone https://github.com/thami33/portfolio.git
    ```
 
 2. **Navigate to Project Directory**
    ```bash
-   cd best-saas-kit
+   cd portfolio
    ```
 
 3. **Install Dependencies**
    ```bash
    npm install
+   # or
+   yarn install
    ```
 
-4. **Set Up Environment Variables**
-   - Copy the example environment file:
-     ```bash
-     cp .env.example .env.local
-     ```
-   - Open `.env.local` and fill in your environment variables:
-     ```env
-     # App
-     NEXT_PUBLIC_APP_URL=http://localhost:3000
-
-     # Supabase
-     NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-     NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-     SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-
-     # Stripe
-     STRIPE_SECRET_KEY=your_stripe_secret_key
-     STRIPE_WEBHOOK_SECRET=your_webhook_secret
-     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_publishable_key
-
-     # Email (Resend)
-     RESEND_API_KEY=your_resend_api_key
-     ```
-
-5. **Run Development Server**
+4. **Run Development Server**
    ```bash
    npm run dev
+   # or
+   yarn dev
    ```
 
-6. **Open Your Browser**
-   Visit [http://localhost:3000](http://localhost:3000) to see your application running.
+5. **Open Your Browser**
+   Visit [http://localhost:3000](http://localhost:3000) to see the portfolio.
 
-## 🔧 Configuration Guide
-
-### Setting Up Supabase
-
-1. Create a [Supabase](https://supabase.com/) account
-2. Create a new project
-3. Go to Project Settings > API
-4. Copy the URL and anon key to your `.env.local`
-
-### Setting Up Stripe
-
-1. Create a [Stripe](https://stripe.com/) account
-2. Get your API keys from the Stripe Dashboard
-3. Add them to your `.env.local`
-4. Set up webhook endpoints (detailed in documentation)
-
-### Setting Up Email with Resend
-
-1. Create a [Resend](https://resend.com/) account
-2. Get your API key
-3. Add it to your `.env.local`
-
-## 📚 Project Structure
+## 📂 Project Structure
 
 ```
-best-saas-kit/
+portfolio/
 ├── src/
 │   ├── app/             # Next.js app router pages
 │   ├── components/      # React components
-│   ├── lib/            # Utility functions
-│   └── styles/         # Global styles
-├── public/             # Static assets
-├── prisma/            # Database schema
+│   │   └── ui/          # UI components
+│   ├── lib/             # Utility libraries
+│   ├── types/           # TypeScript type definitions
+│   └── utils/           # Helper functions
+├── public/              # Static assets
 └── ...config files
 ```
 
-## 🛠️ Development Tools
+## 🛠️ Development
 
-- **Code Quality**
-  - ESLint for code linting
-  - Prettier for code formatting
-  - TypeScript for type safety
+This portfolio showcases a variety of modern web development techniques:
 
-- **Git Hooks**
-  - Husky for Git hooks
-  - lint-staged for staged files linting
+- **Advanced Animations** using Framer Motion
+- **Physics Simulations** with Matter.js
+- **Interactive Game Development**
+- **Particle Effects** for engaging visuals
+- **Responsive Design** principles for all screen sizes
 
-## 🤝 Contributing
+## 📞 Contact
 
-We welcome contributions! Please feel free to submit a Pull Request.
+Feel free to reach out to me for collaboration or opportunities:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Next.js](https://nextjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [Supabase](https://supabase.com/)
-- [Stripe](https://stripe.com/)
-- [Resend](https://resend.com/)
-
-## 💬 Support
-
-If you have any questions or need help, please open an issue or contact us at info@themetaversecompany.uk
+- **Email**: [your-email@example.com]
+- **LinkedIn**: [Your LinkedIn Profile]
+- **GitHub**: [https://github.com/thami33]
 
 ---
 
-Built with ❤️ by [Zain UI Abedeen](https://github.com/zainulabedeen123)
+Built with ❤️ by Thami Mvelase
