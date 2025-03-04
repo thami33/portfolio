@@ -98,8 +98,8 @@ This portfolio showcases a variety of modern web development techniques:
 
 Feel free to reach out to me for collaboration or opportunities:
 
-- **Email**: [your-email@example.com]
-- **LinkedIn**: [Your LinkedIn Profile]
+- **Email**: thamimvelase3@gmail.com
+- **LinkedIn**: https://www.linkedin.com/in/thami-mvelase-2695b9100/
 - **GitHub**: [https://github.com/thami33]
 
 ---
