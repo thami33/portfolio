@@ -130,7 +130,7 @@ export function SnakeGame() {
   };
 
   // Generate random food position with type based on normalFoodEaten counter
-  const generateFood = () => {
+  const generateFood = (): Food => {
     // Determine food type based on normalFoodEaten counter
     const shouldGenerateFunFact = normalFoodEaten >= NORMAL_FOOD_BEFORE_FUN_FACT;
     
@@ -223,7 +223,7 @@ export function SnakeGame() {
   }, [isPaused]);
 
   // Generate power-up
-  const generatePowerUp = () => {
+  const generatePowerUp = (): PowerUp | null => {
     if (Math.random() < POWER_UP_CHANCE) {
       const types: PowerUpType[] = ['speedBoost', 'shield'];  // Removed pointsMultiplier
       const type = types[Math.floor(Math.random() * types.length)];
