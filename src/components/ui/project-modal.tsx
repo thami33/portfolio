@@ -16,6 +16,7 @@ interface ProjectModalProps {
     githubUrl?: string;
     liveUrl?: string;
     videoUrl?: string;
+    playStoreUrl?: string;
   };
 }
 
@@ -157,6 +158,26 @@ export function ProjectModal({ isOpen, onClose, project }: ProjectModalProps) {
                       className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-colors text-white"
                     >
                       Visit Live Site
+                    </a>
+                  )}
+                  {project.playStoreUrl && (
+                    <a
+                      href={project.playStoreUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 transition-colors text-white"
+                    >
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path d="M3.609 1.814L13.792 12 3.609 22.186c-.18.18-.35.23-.52.15-.17-.08-.27-.25-.27-.44V2.104c0-.19.1-.36.27-.44.17-.08.34-.03.52.15zM14.915 13.11l2.76-2.76c.38-.38.38-1 0-1.39-.189-.189-.439-.28-.689-.28-.261 0-.51.091-.7.28L12 13.23 8.028 9.261l10.042-5.743a.937.937 0 01.933-.076c.3.13.49.429.49.76v15.102a.937.937 0 01-.49.76.936.936 0 01-.933-.076l-5.155-2.95 2-2z"/>
+                      </svg>
+                      Get on Google Play
                     </a>
                   )}
                   {project.videoUrl && !project.liveUrl && (

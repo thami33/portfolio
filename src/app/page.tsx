@@ -100,21 +100,23 @@ const projects = [
   {
     title: 'RE5 Master Mobile App',
     description: 'A comprehensive mobile learning platform for financial services professionals preparing for the FSCA\'s RE5 regulatory examination in South Africa.',
-    longDescription: 'RE5 Master is a comprehensive mobile learning platform designed specifically for financial services professionals preparing for the FSCA\'s RE5 regulatory examination in South Africa. The app provides a structured learning experience with practice questions, mock exams, and study materials that align with official FSCA documentation and current regulations.',
+    longDescription: 'RE5 Master is a comprehensive mobile learning platform designed specifically for financial services professionals preparing for the FSCA\'s RE5 regulatory examination in South Africa. The app provides a structured learning experience with practice questions, mock exams, study materials, and an AI study assistant that align with official FSCA documentation and current regulations.',
     tech: ['React Native', 'Expo', 'TypeScript', 'Firebase', 'PayFast', 'OpenAI API', 'Expo Router', 'React Context', 'Styled Components'],
     link: 'https://youtu.be/Oxh2jgtkras',
     image: '/re5-master-preview.png',
     features: [
       'Practice Question Bank: Extensive collection of practice questions organized by topic',
       'Mock Exams: Multiple full-length simulated exams with timing and scoring',
+      'Personal AI Study Assistant: Meet Maya, your dedicated RE5 study buddy that answers questions and helps with difficult concepts',
       'Learning Materials: Comprehensive study guides and flashcards',
+      'Audio Lessons: Learn on the go with narrated lessons covering essential RE5 topics',
       'Progress Tracking: Detailed statistics and performance analytics',
+      'Flash Cards: Quickly review key concepts and terms with interactive flash cards',
       'Premium Subscription: Enhanced access to additional mock exams and features',
       'Secure Payment Processing: Integration with PayFast for South African payments',
       'User Authentication: Secure account management and progress saving',
       'Responsive Design: Optimized for both iOS and Android devices',
-      'Offline Access: Study materials available without internet connection',
-      'AI-Powered Assistance: OpenAI integration for answering regulatory questions'
+      'Offline Access: Study materials available without internet connection'
     ],
     challenges: [
       'Implementing secure payment processing with PayFast',
@@ -127,7 +129,9 @@ const projects = [
       'Synchronizing offline and online data for seamless user experience',
       'Integrating OpenAI API for regulatory assistance features'
     ],
-    videoUrl: 'https://youtu.be/Oxh2jgtkras'
+    videoUrl: 'https://youtu.be/Oxh2jgtkras',
+    liveUrl: 'https://re5master.com',
+    playStoreUrl: 'https://play.google.com/store/apps/details?id=com.re5masterapp.app'
   },
   {
     title: 'CareerDash',
@@ -713,8 +717,23 @@ export default function Home() {
                   />
                 </div>
                 <div className="relative w-full" style={{ transform: "translateZ(30px)" }}>
-                  <h3 className="text-xl font-semibold leading-6 text-white group-hover:text-indigo-400 transition-colors">
+                  <h3 className="text-xl font-semibold leading-6 text-white group-hover:text-indigo-400 transition-colors flex flex-wrap items-center gap-2">
                     {project.title}
+                    {project.playStoreUrl && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-green-500/20 px-2.5 py-1 text-xs font-medium text-green-400 ring-1 ring-inset ring-green-500/30">
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          width="12" 
+                          height="12" 
+                          viewBox="0 0 24 24" 
+                          fill="currentColor"
+                          className="w-3 h-3"
+                        >
+                          <path d="M3.609 1.814L13.792 12 3.609 22.186c-.18.18-.35.23-.52.15-.17-.08-.27-.25-.27-.44V2.104c0-.19.1-.36.27-.44.17-.08.34-.03.52.15zM14.915 13.11l2.76-2.76c.38-.38.38-1 0-1.39-.189-.189-.439-.28-.689-.28-.261 0-.51.091-.7.28L12 13.23 8.028 9.261l10.042-5.743a.937.937 0 01.933-.076c.3.13.49.429.49.76v15.102a.937.937 0 01-.49.76.936.936 0 01-.933-.076l-5.155-2.95 2-2z"/>
+                        </svg>
+                        Live on Play Store
+                      </span>
+                    )}
                   </h3>
                   <p className="mt-4 text-sm leading-6 text-gray-400">{project.description}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
